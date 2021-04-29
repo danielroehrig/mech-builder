@@ -29,13 +29,14 @@ module switchPlateFootprint(w = 1, h = 1, tol = 0.05) {
         }
     }else if(w > h && w >= 6 && w <= 7){
         fullLength = (2*(0.825+6.75+1.525)+switchDim+((w-2)*uSize));
+        switchPlacer = (-1.525-6.75-0.825+fullLength/2-switchDim/2);
         union(){
-            translate([-1.525-6.75-0.825,6.285+0.23,0]) square([fullLength,2.785]);
-            translate([-1.525-6.75,0.23,0]) square([6.75,3.23+2.785+6.285]);
-            translate([(-1.525-6.75)*2+fullLength,0.23,0]) square([6.75,3.23+2.785+6.285]);
-            translate([-1.525-1.725-3.3,-1.2+0.23,0]) square([3.3, 1.2]);
-            translate([2*(-1.525-1.725-3.3)+fullLength-1.725,-1.2+0.23,0]) square([3.3, 1.2]);
-            #translate([-1.525-6.75-0.825+fullLength/2-switchDim/2, 0, 0]) square([switchDim,switchDim]);
+            translate([-1.525-6.75-0.825-switchPlacer,6.285+0.23,0]) square([fullLength,2.785]);
+            translate([-1.525-6.75-switchPlacer,0.23,0]) square([6.75,3.23+2.785+6.285]);
+            translate([(-1.525-6.75)*2+fullLength-switchPlacer,0.23,0]) square([6.75,3.23+2.785+6.285]);
+            translate([-1.525-1.725-3.3-switchPlacer,-1.2+0.23,0]) square([3.3, 1.2]);
+            translate([2*(-1.525-1.725-3.3)+fullLength-1.725-switchPlacer,-1.2+0.23,0]) square([3.3, 1.2]);
+            translate([0, 0, 0]) square([switchDim,switchDim]);
         }
     }else{
         echo("What kind of weird keysize is THAT?!");
@@ -67,7 +68,7 @@ for ( keyPos = [0:len(lays)-1]){
             switchPlateFootprint(widthInU, heightInU);
         }
     }else if(widthInU>=6) {
-        translate([xpos+((widthInU*uSize)-switchDim)/2-(2*uSize), -lays[keyPos][1]*19, 0]) {
+        translate([xpos+((widthInU*uSize)-switchDim)/2, -lays[keyPos][1]*19, 0]) {
             switchPlateFootprint(widthInU, heightInU);
         }
     }
