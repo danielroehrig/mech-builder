@@ -59,17 +59,27 @@ lays = [
     [0,4,1.25,1], [1.25,4,1.25,1],[3.5,4,1,1],[4.5,4,6,1],[10.5,4,1,1],[12.5,4,1.25,1],[13.75,4,1.25,1],
 ];
 
-for ( keyPos = [0:len(lays)-1]){
-    xpos = lays[keyPos][0]*uSize;
-    widthInU = lays[keyPos][2];
-    heightInU = lays[keyPos][3];
-    if(widthInU<3){   
-        translate([xpos+((widthInU*uSize)-switchDim)/2, -lays[keyPos][1]*19, 0]) {
-            switchPlateFootprint(widthInU, heightInU);
-        }
-    }else if(widthInU>=6) {
-        translate([xpos+((widthInU*uSize)-switchDim)/2, -lays[keyPos][1]*19, 0]) {
-            switchPlateFootprint(widthInU, heightInU);
+layout(lays);
+echo(maxHeight(lays));
+#translate([0,-maxHeight(lays),0]) square([300,5], center=false);
+
+module layout(lays){
+    for ( keyPos = [0:len(lays)-1]){
+        widthInU = lays[keyPos][2];
+        heightInU = lays[keyPos][3];
+        xpos = lays[keyPos][0]*uSize+((widthInU*uSize)-switchDim)/2;
+        ypos = (lays[keyPos][1]+1)*uSize;
+
+        if(widthInU<3){   
+            translate([xpos, -ypos+(uSize-switchDim)/2, 0]) {
+                switchPlateFootprint(widthInU, heightInU);
+            }
+        }else if(widthInU>=6) {
+            translate([xpos, -ypos+(uSize-switchDim)/2, 0]) {
+                switchPlateFootprint(widthInU, heightInU);
+            }
         }
     }
 }
+
+function maxHeight(layout, i=0) = (i < len(layout)-1) ? max((layout[i][1]+1)*layout[i][3]*uSize, maxHeight(layout, i+1)) : (layout[i][1]+1)*layout[i][3]*uSize;
