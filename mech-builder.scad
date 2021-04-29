@@ -61,9 +61,10 @@ lays = [
 
 layout(lays);
 echo(maxHeight(lays));
-#translate([0,-maxHeight(lays),0]) square([300,5], center=false);
+#translate([0,maxHeight(lays),0]) square([300,5], center=false);
 
 module layout(lays){
+    translate([0,maxHeight(lays),0])
     for ( keyPos = [0:len(lays)-1]){
         widthInU = lays[keyPos][2];
         heightInU = lays[keyPos][3];
