@@ -61,7 +61,8 @@ lays = [
 
 layout(lays);
 echo(maxHeight(lays));
-#translate([0,maxHeight(lays),0]) square([300,5], center=false);
+echo(maxWidth(lays));
+#translate([0,0,0]) square([maxWidth(lays),maxHeight(lays)], center=false);
 
 module layout(lays){
     translate([0,maxHeight(lays),0])
@@ -83,4 +84,6 @@ module layout(lays){
     }
 }
 
-function maxHeight(layout, i=0) = (i < len(layout)-1) ? max((layout[i][1]+1)*layout[i][3]*uSize, maxHeight(layout, i+1)) : (layout[i][1]+1)*layout[i][3]*uSize;
+function maxHeight(layout, i=0) = (i < len(layout)-1) ? max((layout[i][1]+layout[i][3])*uSize, maxHeight(layout, i+1)) : (layout[i][1]+layout[i][3])*uSize;
+
+function maxWidth(layout, i=0) = (i < len(layout)-1) ? max((layout[i][0]+layout[i][2])*uSize, maxWidth(layout, i+1)) : (layout[i][0]+layout[i][2])*uSize;
