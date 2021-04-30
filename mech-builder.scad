@@ -1,5 +1,3 @@
-include <scad-utils/morphology.scad>
-
 $fn=25;
 plate_height=1.5;
 uSize=19;
@@ -46,7 +44,9 @@ module switchPlateFootprint(w = 1, h = 1, tol = 0.05) {
 module rectangular_plate(layout, widthPadding = 0, heightPadding = 0, rounding = 0) {
     linear_extrude(height=plate_height){
         difference(){
-            translate([0,0,0]) rounding(r=rounding) square([maxWidth(layout)+widthPadding*2,maxHeight(layout)+heightPadding*2], center=false);
+            translate([0,0,0]) 
+            rounding(r=rounding)
+            square([maxWidth(layout)+widthPadding*2,maxHeight(layout)+heightPadding*2], center=false);
             translate([widthPadding, heightPadding, 0])
             layout(layout);
         }
@@ -73,9 +73,48 @@ module layout(lays){
     }
 }
 
-module case_bottom(layout) {
-}
-
 function maxHeight(layout, i=0) = (i < len(layout)-1) ? max((layout[i][1]+layout[i][3])*uSize, maxHeight(layout, i+1)) : (layout[i][1]+layout[i][3])*uSize;
 
 function maxWidth(layout, i=0) = (i < len(layout)-1) ? max((layout[i][0]+layout[i][2])*uSize, maxWidth(layout, i+1)) : (layout[i][0]+layout[i][2])*uSize;
+
+
+//Literally copy and pasted from utils
+
+module outset(d=1) {
+	// Bug workaround for older OpenSCAD versions
+	if (version_num() < 20130424) render() outset_extruded(d) children();
+	else minkowski() {
+		circle(r=d);
+		children();
+	}
+}
+
+module outset_extruded(d=1) {
+   projection(cut=true) minkowski() {
+        cylinder(r=d);
+        linear_extrude(center=true) children();
+   }
+}
+
+module inset(d=1) {
+	 render() inverse() outset(d=d) inverse() children();
+}
+
+module fillet(r=1) {
+	inset(d=r) render() outset(d=r) children();
+}
+
+module rounding(r=1) {
+    if(r>0){
+        outset(d=r) inset(d=r) children();
+    }else{
+        children();
+    }
+}
+
+module inverse() {
+	difference() {
+		square(1e5,center=true);
+		children();
+	}
+}

@@ -22,4 +22,8 @@ echo(maxHeight(lays));
 echo(maxWidth(lays));
 
 
-rectangular_plate(lays, widthPadding = 3, heightPadding = 3, rounding = 5);
+rectangular_plate(lays, widthPadding = 3, heightPadding = 3, rounding = 0);
+
+module case_bottom(layout) {
+    
+}
